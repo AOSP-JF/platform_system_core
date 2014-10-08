@@ -81,14 +81,16 @@ extern "C" {
 #endif
 #endif
 
-#define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
+#ifndef __predict_false
+#define __predict_false(exp) __builtin_expect((exp) != 0, 0)
+#endif
 
 #ifndef ALOGV_IF
 #if LOG_NDEBUG
 #define ALOGV_IF(cond, ...)   ((void)0)
 #else
 #define ALOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -103,7 +105,7 @@ extern "C" {
 
 #ifndef ALOGD_IF
 #define ALOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -117,7 +119,7 @@ extern "C" {
 
 #ifndef ALOGI_IF
 #define ALOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -131,7 +133,7 @@ extern "C" {
 
 #ifndef ALOGW_IF
 #define ALOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -145,7 +147,7 @@ extern "C" {
 
 #ifndef ALOGE_IF
 #define ALOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)ALOG(LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -203,7 +205,8 @@ extern "C" {
  * Simplified macro to send a verbose system log message using the current LOG_TAG.
  */
 #ifndef SLOGV
-#define __SLOGV(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#define __SLOGV(...) \
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #if LOG_NDEBUG
 #define SLOGV(...) do { if (0) { __SLOGV(__VA_ARGS__); } } while (0)
 #else
@@ -211,14 +214,12 @@ extern "C" {
 #endif
 #endif
 
-#define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
-
 #ifndef SLOGV_IF
 #if LOG_NDEBUG
 #define SLOGV_IF(cond, ...)   ((void)0)
 #else
 #define SLOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -228,12 +229,13 @@ extern "C" {
  * Simplified macro to send a debug system log message using the current LOG_TAG.
  */
 #ifndef SLOGD
-#define SLOGD(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+#define SLOGD(...) \
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGD_IF
 #define SLOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -242,12 +244,13 @@ extern "C" {
  * Simplified macro to send an info system log message using the current LOG_TAG.
  */
 #ifndef SLOGI
-#define SLOGI(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
+#define SLOGI(...) \
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGI_IF
 #define SLOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -256,12 +259,13 @@ extern "C" {
  * Simplified macro to send a warning system log message using the current LOG_TAG.
  */
 #ifndef SLOGW
-#define SLOGW(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
+#define SLOGW(...) \
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGW_IF
 #define SLOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -270,12 +274,13 @@ extern "C" {
  * Simplified macro to send an error system log message using the current LOG_TAG.
  */
 #ifndef SLOGE
-#define SLOGE(...) ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
+#define SLOGE(...) \
+    ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef SLOGE_IF
 #define SLOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_SYSTEM, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -286,7 +291,8 @@ extern "C" {
  * Simplified macro to send a verbose radio log message using the current LOG_TAG.
  */
 #ifndef RLOGV
-#define __RLOGV(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
+#define __RLOGV(...) \
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__))
 #if LOG_NDEBUG
 #define RLOGV(...) do { if (0) { __RLOGV(__VA_ARGS__); } } while (0)
 #else
@@ -294,14 +300,12 @@ extern "C" {
 #endif
 #endif
 
-#define CONDITION(cond)     (__builtin_expect((cond)!=0, 0))
-
 #ifndef RLOGV_IF
 #if LOG_NDEBUG
 #define RLOGV_IF(cond, ...)   ((void)0)
 #else
 #define RLOGV_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -311,12 +315,13 @@ extern "C" {
  * Simplified macro to send a debug radio log message using the current LOG_TAG.
  */
 #ifndef RLOGD
-#define RLOGD(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
+#define RLOGD(...) \
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGD_IF
 #define RLOGD_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -325,12 +330,13 @@ extern "C" {
  * Simplified macro to send an info radio log message using the current LOG_TAG.
  */
 #ifndef RLOGI
-#define RLOGI(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
+#define RLOGI(...) \
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGI_IF
 #define RLOGI_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -339,12 +345,13 @@ extern "C" {
  * Simplified macro to send a warning radio log message using the current LOG_TAG.
  */
 #ifndef RLOGW
-#define RLOGW(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
+#define RLOGW(...) \
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGW_IF
 #define RLOGW_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -353,12 +360,13 @@ extern "C" {
  * Simplified macro to send an error radio log message using the current LOG_TAG.
  */
 #ifndef RLOGE
-#define RLOGE(...) ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
+#define RLOGE(...) \
+    ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__))
 #endif
 
 #ifndef RLOGE_IF
 #define RLOGE_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)__android_log_buf_print(LOG_ID_RADIO, ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)) \
     : (void)0 )
 #endif
@@ -374,7 +382,7 @@ extern "C" {
  */
 #ifndef LOG_ALWAYS_FATAL_IF
 #define LOG_ALWAYS_FATAL_IF(cond, ...) \
-    ( (CONDITION(cond)) \
+    ( (__predict_false(cond)) \
     ? ((void)android_printAssert(#cond, LOG_TAG, ## __VA_ARGS__)) \
     : (void)0 )
 #endif
