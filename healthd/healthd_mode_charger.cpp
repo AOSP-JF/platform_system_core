@@ -882,7 +882,7 @@ static void charger_event_handler(uint32_t /*epevents*/)
         ev_dispatch();
 }
 
-void healthd_mode_charger_init(struct healthd_config* config)
+void healthd_mode_charger_init(struct healthd_config* /*config*/)
 {
     int ret;
     int charging_enabled = 1;
@@ -892,7 +892,7 @@ void healthd_mode_charger_init(struct healthd_config* config)
 
     dump_last_kmsg();
 
-    LOGW("--------------- STARTING CHARGER MODE ---------------\n");
+    LOGI("--------------- STARTING CHARGER MODE ---------------\n");
 
     if (mode == NORMAL) {
         /* check the charging is enabled or not */
