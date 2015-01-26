@@ -579,7 +579,7 @@ int android_logger_list_read(struct logger_list *logger_list,
         return -EINVAL;
     }
 
-    if (logger_list->mode & O_NONBLOCK) {
+    if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
         memset(&ignore, 0, sizeof(ignore));
         ignore.sa_handler = caught_signal;
         sigemptyset(&ignore.sa_mask);
@@ -599,7 +599,7 @@ int android_logger_list_read(struct logger_list *logger_list,
         }
 
         strcpy(buffer,
-               (logger_list->mode & O_NONBLOCK) ? "dumpAndClose" : "stream");
+               (logger_list->mode & ANDROID_LOG_NONBLOCK) ? "dumpAndClose" : "stream");
         cp = buffer + strlen(buffer);
 
         strcpy(cp, " lids");
@@ -637,14 +637,14 @@ int android_logger_list_read(struct logger_list *logger_list,
             cp += ret;
         }
 
-        if (logger_list->mode & O_NONBLOCK) {
+        if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
             /* Deal with an unresponsive logd */
             sigaction(SIGALRM, &ignore, &old_sigaction);
             old_alarm = alarm(30);
         }
         ret = write(sock, buffer, cp - buffer);
         e = errno;
-        if (logger_list->mode & O_NONBLOCK) {
+        if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
             if (e == EINTR) {
                 e = ETIMEDOUT;
             }
@@ -670,7 +670,7 @@ int android_logger_list_read(struct logger_list *logger_list,
     while(1) {
         memset(log_msg, 0, sizeof(*log_msg));
 
-        if (logger_list->mode & O_NONBLOCK) {
+        if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
             /* particularily useful if tombstone is reporting for logd */
             sigaction(SIGALRM, &ignore, &old_sigaction);
             old_alarm = alarm(30);
@@ -678,7 +678,7 @@ int android_logger_list_read(struct logger_list *logger_list,
         /* NOTE: SOCK_SEQPACKET guarantees we read exactly one full entry */
         ret = recv(logger_list->sock, log_msg, LOGGER_ENTRY_MAX_LEN, 0);
         e = errno;
-        if (logger_list->mode & O_NONBLOCK) {
+        if (logger_list->mode & ANDROID_LOG_NONBLOCK) {
             if ((ret == 0) || (e == EINTR)) {
                 e = EAGAIN;
                 ret = -1;
