@@ -70,6 +70,8 @@ ifneq ($(strip $(TARGET_INIT_VENDOR_LIB)),)
 LOCAL_WHOLE_STATIC_LIBRARIES += $(TARGET_INIT_VENDOR_LIB)
 endif
 
+LOCAL_C_INCLUDES += external/zlib
+
 include $(BUILD_EXECUTABLE)
 
 # Make a symlink from /sbin/ueventd and /sbin/watchdogd to /init
