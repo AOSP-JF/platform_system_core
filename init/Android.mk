@@ -70,6 +70,8 @@ endif
 
 LOCAL_C_INCLUDES += external/zlib
 
+LOCAL_C_INCLUDES += external/zlib
+
 include $(BUILD_EXECUTABLE)
 
 # Make a symlink from /sbin/ueventd and /sbin/watchdogd to /init
