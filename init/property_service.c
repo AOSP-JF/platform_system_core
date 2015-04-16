@@ -540,7 +540,6 @@ void load_persist_props(void)
 void load_all_props(void)
 {
     load_properties_from_file(PROP_PATH_SYSTEM_BUILD, NULL);
-    load_properties_from_file(PROP_PATH_SYSTEM_DEFAULT, NULL);
     load_properties_from_file(PROP_PATH_VENDOR_BUILD, NULL);
     load_properties_from_file(PROP_PATH_FACTORY, "ro.*");
 
