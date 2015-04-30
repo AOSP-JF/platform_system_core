@@ -78,6 +78,8 @@
 #define AID_LOGD          1036  /* log daemon */
 #define AID_SHARED_RELRO  1037  /* creator of shared GNU RELRO files */
 
+#define AID_AUDIT         1049  /* audit daemon */
+
 #define AID_SHELL         2000  /* adb and debug shell user */
 #define AID_CACHE         2001  /* cache access */
 #define AID_DIAG          2002  /* access to diagnostic resources */
@@ -97,8 +99,17 @@
 #define AID_NET_BW_STATS  3006  /* read bandwidth statistics */
 #define AID_NET_BW_ACCT   3007  /* change bandwidth statistics accounting */
 #define AID_NET_BT_STACK  3008  /* bluetooth: access config files */
+#if defined(QCOM_LEGACY_UIDS)
+#define AID_QCOM_ONCRPC   3009  /* can read/write /dev/oncrpc files */
+#define AID_QCOM_DIAG     3010  /* can read/write /dev/diag */
+#else 
+#define AID_QCOM_DIAG     3009  /* can read/write /dev/diag */
+#define AID_IMS           3010 /* can read/write /dev/socket/imsrtp */
+#define AID_SENSORS       3011 /* access to /dev/socket/sensor_ctl_socket & QCCI/QCSI */
+#endif
 
 #define AID_EVERYBODY     9997  /* shared between all apps in the same profile */
+ 
 #define AID_MISC          9998  /* access to misc storage */
 #define AID_NOBODY        9999
 
@@ -161,6 +172,9 @@ static const struct android_id_info android_ids[] = {
     { "sdcard_r",      AID_SDCARD_R, },
     { "clat",          AID_CLAT, },
     { "loop_radio",    AID_LOOP_RADIO, },
+#if defined(QCOM_LEGACY_UIDS)
+    { "qcom_oncrpc",   AID_QCOM_ONCRPC, },
+#endif
     { "mediadrm",      AID_MEDIA_DRM, },
     { "package_info",  AID_PACKAGE_INFO, },
     { "sdcard_pics",   AID_SDCARD_PICS, },
@@ -168,6 +182,8 @@ static const struct android_id_info android_ids[] = {
     { "sdcard_all",    AID_SDCARD_ALL, },
     { "logd",          AID_LOGD, },
     { "shared_relro",  AID_SHARED_RELRO, },
+
+    { "audit",         AID_AUDIT, },
 
     { "shell",         AID_SHELL, },
     { "cache",         AID_CACHE, },
@@ -179,9 +195,16 @@ static const struct android_id_info android_ids[] = {
     { "net_raw",       AID_NET_RAW, },
     { "net_admin",     AID_NET_ADMIN, },
     { "net_bw_stats",  AID_NET_BW_STATS, },
+    { "qcom_diag", AID_QCOM_DIAG, },
+#if !defined(QCOM_LEGACY_UIDS)
+    { "ims", AID_IMS, },
+#endif
     { "net_bw_acct",   AID_NET_BW_ACCT, },
     { "net_bt_stack",  AID_NET_BT_STACK, },
-
+    { "qcom_diag", AID_QCOM_DIAG, },
+#if !defined(QCOM_LEGACY_UIDS)
+    { "sensors",       AID_SENSORS, },
+#endif
     { "everybody",     AID_EVERYBODY, },
     { "misc",          AID_MISC, },
     { "nobody",        AID_NOBODY, },
@@ -214,6 +237,8 @@ __BEGIN_DECLS
  */
 void fs_config(const char *path, int dir,
                unsigned *uid, unsigned *gid, unsigned *mode, uint64_t *capabilities);
+
+};
 
 ssize_t fs_config_generate(char *buffer, size_t length, const struct fs_path_config *pc);
 

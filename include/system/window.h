@@ -309,8 +309,17 @@ enum {
     NATIVE_WINDOW_SET_POST_TRANSFORM_CROP   = 16,   /* private */
     NATIVE_WINDOW_SET_BUFFERS_STICKY_TRANSFORM = 17,/* private */
     NATIVE_WINDOW_SET_SIDEBAND_STREAM       = 18,
-    NATIVE_WINDOW_SET_BUFFERS_DATASPACE     = 19,
-    NATIVE_WINDOW_SET_SURFACE_DAMAGE        = 20,   /* private */
+    /* Maybe buffers size 19, I'm not sure
+     */
+    NATIVE_WINDOW_SET_BUFFERS_SIZE          = 19,   /* private */
+    /*
+     * Not sure that these should be changed...
+     */
+    NATIVE_WINDOW_SET_BUFFERS_DATASPACE     = 20,
+    NATIVE_WINDOW_SET_SURFACE_DAMAGE        = 21,   /* private */
+    /*
+     */
+
 };
 
 /* parameter for NATIVE_WINDOW_[API_][DIS]CONNECT */
