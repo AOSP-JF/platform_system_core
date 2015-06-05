@@ -45,9 +45,7 @@ LOCAL_STATIC_LIBRARIES := \
 	libc \
 	libselinux \
 	libmincrypt \
-	libext4_utils_static \
-	libsparse_static \
-	libz
+	libext4_utils_static
 
 LOCAL_ADDITIONAL_DEPENDENCIES += $(LOCAL_PATH)/Android.mk
 
