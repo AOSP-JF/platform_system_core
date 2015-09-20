@@ -37,15 +37,14 @@ BacktraceMap::BacktraceMap(pid_t pid) : pid_(pid) {
 BacktraceMap::~BacktraceMap() {
 }
 
-void BacktraceMap::FillIn(uintptr_t addr, backtrace_map_t* map) {
+const backtrace_map_t* BacktraceMap::Find(uintptr_t addr) {
   for (BacktraceMap::const_iterator it = begin();
        it != end(); ++it) {
     if (addr >= it->start && addr < it->end) {
-      *map = *it;
-      return;
+      return &*it;
     }
   }
-  *map = {};
+  return NULL;
 }
 
 bool BacktraceMap::ParseLine(const char* line, backtrace_map_t* map) {

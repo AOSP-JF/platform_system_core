@@ -45,7 +45,7 @@ public:
 
   virtual bool Build();
 
-  virtual void FillIn(uintptr_t addr, backtrace_map_t* map);
+  virtual const backtrace_map_t* Find(uintptr_t addr);
 
 protected:
   virtual bool GenerateMap();

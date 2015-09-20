@@ -239,13 +239,12 @@ static void dump_stack_segment(
       break;
     }
 
-    backtrace_map_t map;
-    backtrace->FillInMap(stack_content, &map);
+    const backtrace_map_t* map = backtrace->FindMap(stack_content);
     const char* map_name;
-    if (BacktraceMap::IsValid(map)) {
+    if (!map) {
       map_name = "";
     } else {
-      map_name = map.name.c_str();
+      map_name = map->name.c_str();
     }
     uintptr_t offset = 0;
     std::string func_name(backtrace->GetFunctionName(stack_content, &offset));

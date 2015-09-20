@@ -37,8 +37,8 @@ public:
   inline pid_t Pid() { return backtrace_obj_->Pid(); }
   inline pid_t Tid() { return backtrace_obj_->Tid(); }
 
-  inline void FillInMap(uintptr_t addr, backtrace_map_t* map) {
-    backtrace_obj_->FillInMap(addr, map);
+  inline const backtrace_map_t* FindMap(uintptr_t addr) {
+    return backtrace_obj_->FindMap(addr);
   }
   inline std::string GetFunctionName(uintptr_t pc, uintptr_t* offset) {
     return backtrace_obj_->GetFunctionName(pc, offset);

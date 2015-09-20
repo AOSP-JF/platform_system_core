@@ -99,15 +99,15 @@ std::string Backtrace::FormatFrameData(size_t frame_num) {
 
 std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
   const char* map_name;
-  if (BacktraceMap::IsValid(frame->map) && !frame->map.name.empty()) {
-    map_name = frame->map.name.c_str();
+  if (frame->map && !frame->map->name.empty()) {
+    map_name = frame->map->name.c_str();
   } else {
     map_name = "<unknown>";
   }
 
   uintptr_t relative_pc;
-  if (BacktraceMap::IsValid(frame->map)) {
-    relative_pc = frame->pc - frame->map.start;
+  if (frame->map) {
+    relative_pc = frame->pc - frame->map->start;
   } else {
     relative_pc = frame->pc;
   }
@@ -128,8 +128,8 @@ std::string Backtrace::FormatFrameData(const backtrace_frame_data_t* frame) {
   return buf;
 }
 
-void Backtrace::FillInMap(uintptr_t pc, backtrace_map_t* map) {
-  map_->FillIn(pc, map);
+const backtrace_map_t* Backtrace::FindMap(uintptr_t pc) {
+  return map_->Find(pc);
 }
 
 //-------------------------------------------------------------------------
@@ -147,9 +147,8 @@ bool BacktraceCurrent::ReadWord(uintptr_t ptr, word_t* out_value) {
     return false;
   }
 
-  backtrace_map_t map;
-  FillInMap(ptr, &map);
-  if (BacktraceMap::IsValid(map) && map.flags & PROT_READ) {
+  const backtrace_map_t* map = FindMap(ptr);
+  if (map && map->flags & PROT_READ) {
     *out_value = *reinterpret_cast<word_t*>(ptr);
     return true;
   } else {
