@@ -12,6 +12,10 @@ import /init.trace.rc
 # Include JDC AOSP's extra init file
 import /init.jdc.rc
 
+on fs
+     # Trim partitions
+     start emmc_trim
+
 on early-init
     # Set init and its forked children's oom_adj.
     write /proc/1/oom_score_adj -1000
@@ -675,3 +679,10 @@ service pre-recovery /system/bin/uncrypt
     class main
     disabled
     oneshot
+
+# eMMC trim
+service emmc_trim /system/bin/emmc_trim
+     user root
+     group shell
+     disabled
+     oneshot
