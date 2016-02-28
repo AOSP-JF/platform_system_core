@@ -371,9 +371,9 @@ static void dump_last_kmsg(void)
     free(buf);
 
 out:
-    LOGI("\n");
-    LOGI("************* END LAST KMSG *************\n");
-    LOGI("\n");
+    LOGW("\n");
+    LOGW("************* END LAST KMSG *************\n");
+    LOGW("\n");
 }
 
 static int read_file(const char *path, char *buf, size_t sz)
@@ -424,11 +424,6 @@ static int read_file_int(const char *path, int *val)
 
 err:
     return -1;
-}
-
-static int get_battery_capacity()
-{
-    return charger_state.capacity;
 }
 
 #ifdef CHARGER_ENABLE_SUSPEND
@@ -790,7 +785,10 @@ static void handle_power_supply_state(struct charger *charger, int64_t now)
     if (!charger->have_battery_state)
         return;
 
-    soc = get_battery_capacity();
+    if (batt_prop && batt_prop->batteryLevel >= 0) {
+        soc = batt_prop->batteryLevel;
+    }
+
     if (old_soc != soc) {
         old_soc = soc;
         set_battery_soc_leds(soc);
@@ -910,7 +908,7 @@ static void charger_event_handler(uint32_t /*epevents*/)
         ev_dispatch();
 }
 
-void healthd_mode_charger_init(struct healthd_config* /*config*/)
+void healthd_mode_charger_init(struct healthd_config* config)
 {
     int ret;
     int charging_enabled = 1;
@@ -920,7 +918,7 @@ void healthd_mode_charger_init(struct healthd_config* /*config*/)
 
     dump_last_kmsg();
 
-    LOGI("--------------- STARTING CHARGER MODE ---------------\n");
+    LOGW("--------------- STARTING CHARGER MODE ---------------\n");
 
     if (mode == NORMAL) {
         /* check the charging is enabled or not */
